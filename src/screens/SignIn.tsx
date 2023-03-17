@@ -20,6 +20,7 @@ import { useAuth } from "@hooks/useAuth";
 
 import { useForm, Controller } from "react-hook-form";
 import { AppError } from "@utils/AppError";
+import { useState } from "react";
 
 type FormData = {
   email: string;
@@ -35,18 +36,22 @@ export function SignIn() {
     formState: { errors },
   } = useForm<FormData>();
 
+  const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
 
   const { signIn } = useAuth();
 
   async function handleSignIn({ email, password }: FormData) {
     try {
+      setIsLoading(true);
       await signIn(email, password);
     } catch (error) {
       const isAppError = error instanceof AppError;
       const title = isAppError
         ? error.message
         : "Não foi possível entrar. Tente novamente mais tarde.";
+
+      setIsLoading(false);
 
       toast.show({
         title,
@@ -120,7 +125,11 @@ export function SignIn() {
             )}
           />
 
-          <Button title="Acessar" onPress={handleSubmit(handleSignIn)} />
+          <Button
+            title="Acessar"
+            onPress={handleSubmit(handleSignIn)}
+            isLoading={isLoading}
+          />
         </Center>
 
         <Center mt={24}>
