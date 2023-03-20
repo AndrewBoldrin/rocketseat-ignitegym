@@ -41,13 +41,13 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   async function storageUserAndTokenSave(
     userData: UserDTO,
     token: string,
-    reflesh_token: string
+    refresh_token: string
   ) {
     try {
       setIsLoadingUserStorageData(true);
 
       await storageUserSave(userData);
-      await storageAuthTokenSave({ token, reflesh_token });
+      await storageAuthTokenSave({ token, refresh_token });
     } catch (error) {
       throw error;
     } finally {
@@ -59,11 +59,11 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     try {
       const { data } = await api.post("/sessions", { email, password });
 
-      if (data.user && data.token && data.reflesh_token) {
+      if (data.user && data.token && data.refresh_token) {
         await storageUserAndTokenSave(
           data.user,
           data.token,
-          data.reflesh_token
+          data.refresh_token
         );
         userAndTokenUpdate(data.user, data.token);
       }
